@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FruitVideo AI — Tes histoires en vidéo</title>
+<style>
+:root{--bg:#090812;--panel:#151326;--panel2:#201b35;--purple:#a855f7;--pink:#e879f9;--text:#f7f4ff;--muted:#aaa3bd;--line:#39314f}
+*{box-sizing:border-box}body{margin:0;color:var(--text);background:radial-gradient(ellipse at 70% 0,#28124a 0,transparent 45%),var(--bg);font-family:Inter,system-ui,Arial,sans-serif}
+header{position:sticky;top:0;z-index:2;background:#0c0a14eF;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:16px max(5vw,18px);gap:16px}
+.logo{font-size:23px;font-weight:850;letter-spacing:-1px}.logo span{color:var(--purple)}nav{display:flex;gap:20px;color:var(--muted);font-size:14px}
+main{max-width:1150px;margin:auto;padding:32px 20px}.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:18px;padding:28px 0 22px}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.04;margin:0 0 15px;letter-spacing:-2px}.gradient{background:linear-gradient(90deg,#c084fc,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:17px;color:var(--muted);line-height:1.6}.fruithero{font-size:clamp(60px,10vw,100px);text-align:center;filter:drop-shadow(0 8px 20px #6d28d9)}
+.workspace{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{background:linear-gradient(150deg,#171428,#100e1d);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 10px 35px #0005}
+h2{font-size:18px;margin:0 0 14px}label{font-size:14px;font-weight:700;display:block;margin:16px 0 8px}
+textarea,select{width:100%;border:1px solid #4b4168;background:#0c0a16;color:var(--text);border-radius:13px;padding:14px;font:inherit;outline:none}textarea{min-height:160px;resize:vertical}textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px #a855f733}
+.fruits{display:flex;flex-wrap:wrap;gap:8px}.fruit{border:1px solid var(--line);background:#211c33;border-radius:13px;padding:10px 12px;color:var(--text);cursor:pointer;transition:.15s}.fruit.selected{border-color:var(--purple);box-shadow:0 0 12px #a855f755;background:#302044}.fruit span{font-size:25px;display:block;text-align:center}.fruit small{display:block;margin-top:4px}
+button{border:0;color:white;background:linear-gradient(90deg,#a020f0,#6234f5);border-radius:14px;padding:15px 18px;font-size:16px;font-weight:800;cursor:pointer;transition:.2s}button:hover{filter:brightness(1.12);transform:translateY(-1px)}button:disabled{opacity:.6;cursor:wait}.full{width:100%;margin-top:18px}
+.preview{min-height:270px;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at center,#39235d,#151123 65%);border-radius:16px;border:1px solid #44345c;padding:25px}.preview .emoji{font-size:70px;letter-spacing:8px}.preview p{color:var(--muted)}
+.output{margin-top:18px;display:none}.scene{background:#0d0b18;border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}.scene h3{margin:0 0 8px;font-size:15px}.scene p{margin:6px 0;color:#d5cce8;line-height:1.55;font-size:14px}.copy{padding:8px 12px;font-size:13px;margin-top:8px}.small{font-size:13px;color:var(--muted);line-height:1.5}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:30px}
+@media(max-width:800px){nav{display:none}.hero,.workspace{grid-template-columns:1fr}.hero{padding-top:12px}.fruithero{padding:5px}.panel{padding:17px}.preview{min-height:200px}}
+</style>
+</head>
+<body>
+<header><div class="logo">▶ FruitVideo <span>AI</span></div><nav><a style="color:inherit;text-decoration:none" href="#create">Créer</a><a style="color:inherit;text-decoration:none" href="#faq">Comment ça marche ?</a></nav><button onclick="document.getElementById('create').scrollIntoView({behavior:'smooth'})">✨ Créer</button></header>
+<main>
+<section class="hero"><div><h1>Transforme tes histoires en <span class="gradient">vidéos de fruits</span></h1><p>Imagine une histoire, choisis tes personnages fruités et prépare tes scènes pour les transformer en vidéo IA.</p></div><div class="fruithero">🍓 🍌 🍉 🍊</div></section>
+<section id="create" class="workspace">
+<div class="panel">
+<h2>✍️ 1. Ton histoire</h2>
+<textarea id="story" maxlength="3000" placeholder="Exemple : Une banane entre dans un supermarché. Elle rencontre une fraise qui lui vole son portefeuille. Elles se poursuivent dans les rayons..."></textarea>
+<div class="small" id="count">0 / 3000 caractères</div>
+<label>🍇 2. Choisis les personnages (facultatif)</label>
+<div class="fruits" id="fruits">
+<button type="button" class="fruit selected" data-fruit="Fraise"> <span>🍓</span><small>Fraise</small></button>
+<button type="button" class="fruit" data-fruit="Banane"><span>🍌</span><small>Banane</small></button>
+<button type="button" class="fruit" data-fruit="Pomme"><span>🍎</span><small>Pomme</small></button>
+<button type="button" class="fruit" data-fruit="Pastèque"><span>🍉</span><small>Pastèque</small></button>
+<button type="button" class="fruit" data-fruit="Orange"><span>🍊</span><small>Orange</small></button>
+<button type="button" class="fruit" data-fruit="Raisin"><span>🍇</span><small>Raisin</small></button>
+<button type="button" class="fruit" data-fruit="Ananas"><span>🍍</span><small>Ananas</small></button>
+<button type="button" class="fruit" data-fruit="Kiwi"><span>🥝</span><small>Kiwi</small></button>
+</div>
+<label>🎨 Style vidéo</label>
+<select id="style"><option>Animation 3D cinématique, réaliste et drôle</option><option>Animation cartoon colorée</option><option>Style Pixar-like, personnages expressifs (sans copier une œuvre)</option><option>Vidéo réaliste avec fruits anthropomorphes</option><option>Anime</option></select>
+<label>🎙️ Format</label><select id="format"><option>Vertical 9:16 (TikTok / Shorts / Reels)</option><option>Horizontal 16:9 (YouTube)</option><option>Carré 1:1</option></select>
+<button class="full" id="generate">✨ Découper mon histoire en scènes</button>
+</div>
+<div class="panel">
+<h2>🎬 3. Aperçu et scènes</h2>
+<div class="preview"><div><div class="emoji">🍓 🎥 🍌</div><h3>Ton film de fruits commence ici</h3><p>Écris une histoire pour préparer un storyboard et des prompts vidéo.</p></div></div>
+<div class="small" style="margin-top:14px">Cette première version prépare le storyboard et les prompts. Elle ne génère pas encore le fichier vidéo elle-même : il faudra envoyer les prompts à un service de génération vidéo.</div>
+<div class="output" id="output"></div>
+</div>
+</section>
+<section class="panel" id="faq" style="margin-top:18px"><h2>ℹ️ Comment ça marche ?</h2><p class="small">1. Colle ton texte. 2. Sélectionne tes fruits et ton style. 3. Le site découpe l'histoire en scènes et prépare des descriptions prêtes à copier dans un outil de vidéo IA.</p><p class="small">Une connexion à un service vidéo IA sera nécessaire pour produire automatiquement le vrai fichier vidéo. Certains services offrent des crédits gratuits, mais leur disponibilité varie.</p></section>
+</main><footer>FruitVideo AI · Prototype</footer>
+<script>
+const story=document.getElementById('story'), count=document.getElementById('count'), output=document.getElementById('output');
+story.addEventListener('input',()=>count.textContent=story.value.length+' / 3000 caractères');
+document.querySelectorAll('.fruit').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('selected')));
+function splitScenes(text){
+ let parts=text.replace(/\n+/g,' ').match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[];
+ parts=parts.map(s=>s.trim()).filter(Boolean);
+ if(parts.length<=1 && text.length>220){let words=text.split(/\s+/),chunks=[],chunk=[];words.forEach(w=>{chunk.push(w);if(chunk.length>=35){chunks.push(chunk.join(' '));chunk=[]}});if(chunk.length)chunks.push(chunk.join(' '));return chunks}
+ return parts.length?parts:[text.trim()];
+}
+document.getElementById('generate').addEventListener('click',()=>{
+ const text=story.value.trim();if(!text){story.focus();alert('Écris d’abord ton histoire !');return}
+ const selected=[...document.querySelectorAll('.fruit.selected')].map(b=>b.dataset.fruit);
+ const style=document.getElementById('style').value,format=document.getElementById('format').value;
+ const scenes=splitScenes(text);output.style.display='block';output.innerHTML='';
+ const apiButton=document.getElementById('generate');apiButton.disabled=true;apiButton.textContent='⏳ Envoi à l’IA…';
+ try {
+   const prompt=`Create a short animated fruit-character film. Story: ${text}. Characters to include: ${selected.length?selected.join(', '):'choose fruits that fit the story'}. Visual style: ${style}. Keep character appearance consistent, expressive faces, clear actions, cinematic camera movement. No subtitles or on-screen text.`;
+   const response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,aspect_ratio:format.includes('9:16')?'9:16':format.includes('16:9')?'16:9':'1:1'})});
+   const data=await response.json();
+   if(!response.ok) throw new Error(data.error||'Erreur du service vidéo');
+   const result=document.createElement('div');result.className='scene';
+   const title=document.createElement('h3');title.textContent='✅ Demande envoyée au moteur vidéo';result.appendChild(title);
+   const details=document.createElement('p');details.textContent='Réponse du service : '+JSON.stringify(data);result.appendChild(details);
+   const note=document.createElement('p');note.className='small';note.textContent='La génération peut prendre du temps. Consulte le tableau de bord Magic Hour pour suivre le projet et récupérer le clip.';result.appendChild(note);
+   const link=document.createElement('a');link.href='https://magichour.ai/my-library';link.target='_blank';link.rel='noopener';link.textContent='Ouvrir mes créations Magic Hour →';link.style.color='#d8a7ff';result.appendChild(link);
+   output.appendChild(result);
+ } catch(err) {
+   const errBox=document.createElement('div');errBox.className='scene';errBox.textContent='Impossible de lancer la génération : '+err.message+' — Vérifie que le serveur est démarré et que MAGIC_HOUR_API_KEY est configurée.';output.appendChild(errBox);
+ } finally {apiButton.disabled=false;apiButton.textContent='✨ Découper mon histoire en scènes';}
+ scenes.forEach((s,i)=>{
+ const prompt=`Scène ${i+1} d'une vidéo ${format}. ${style}. Personnages fruits : ${selected.length?selected.join(', '):'fruits adaptés au scénario'}. Action de la scène : ${s}. Garder le même design et les mêmes personnages que les scènes précédentes, mouvement fluide, expressions exagérées, ambiance amusante, aucun texte incrusté.`;
+ const div=document.createElement('div');div.className='scene';
+ const h=document.createElement('h3');h.textContent='🎞️ Scène '+(i+1);div.appendChild(h);
+ const p=document.createElement('p');p.textContent=s;div.appendChild(p);
+ const pre=document.createElement('p');pre.textContent=prompt;div.appendChild(pre);
+ const btn=document.createElement('button');btn.className='copy';btn.textContent='📋 Copier le prompt';btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(prompt);btn.textContent='Copié !'}catch(e){const ta=document.createElement('textarea');ta.value=prompt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();btn.textContent='Copié !'}setTimeout(()=>btn.textContent='📋 Copier le prompt',1600)});div.appendChild(btn);
+ output.appendChild(div);
+ });
+ const copyAll=document.createElement('button');copyAll.textContent='📋 Copier tous les prompts';copyAll.className='full';
+ copyAll.onclick=async()=>{let all=[...output.querySelectorAll('.scene p:nth-of-type(2)')].map(p=>p.textContent).join('\n\n');try{await navigator.clipboard.writeText(all);copyAll.textContent='Tout est copié !'}catch(e){copyAll.textContent='Copie indisponible'}setTimeout(()=>copyAll.textContent='📋 Copier tous les prompts',1500)};
+ output.appendChild(copyAll);
+ output.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+</script>
+</body>
+</html>
