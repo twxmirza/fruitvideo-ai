@@ -67,7 +67,7 @@ function splitScenes(text){
  if(parts.length<=1 && text.length>220){let words=text.split(/\s+/),chunks=[],chunk=[];words.forEach(w=>{chunk.push(w);if(chunk.length>=35){chunks.push(chunk.join(' '));chunk=[]}});if(chunk.length)chunks.push(chunk.join(' '));return chunks}
  return parts.length?parts:[text.trim()];
 }
-document.getElementById('generate').addEventListener('click',()=>{
+document.getElementById('generate').addEventListener('click',async()=>{
  const text=story.value.trim();if(!text){story.focus();alert('Écris d’abord ton histoire !');return}
  const selected=[...document.querySelectorAll('.fruit.selected')].map(b=>b.dataset.fruit);
  const style=document.getElementById('style').value,format=document.getElementById('format').value;
